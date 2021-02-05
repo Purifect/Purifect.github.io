@@ -379,42 +379,42 @@ head(mergedBeerData)</code></pre>
 ## 4          1       Pumpion    2689 0.060  38
 ## 5          1    Stronghold    2688 0.060  25
 ## 6          1   Parapet ESB    2687 0.056  47
-##                                 Style Ounces
-## 1                        American IPA     16
-## 2                  Milk / Sweet Stout     16
-## 3                   English Brown Ale     16
-## 4                         Pumpkin Ale     16
-## 5                     American Porter     16
-## 6 Extra Special / Strong Bitter (ESB)     16
-##         Brewery_name        City State
-## 1 NorthGate Brewing  Minneapolis    MN
-## 2 NorthGate Brewing  Minneapolis    MN
-## 3 NorthGate Brewing  Minneapolis    MN
-## 4 NorthGate Brewing  Minneapolis    MN
-## 5 NorthGate Brewing  Minneapolis    MN
-## 6 NorthGate Brewing  Minneapolis    MN</code></pre>
+##                                 Style Ounces       Brewery_name        City
+## 1                        American IPA     16 NorthGate Brewing  Minneapolis
+## 2                  Milk / Sweet Stout     16 NorthGate Brewing  Minneapolis
+## 3                   English Brown Ale     16 NorthGate Brewing  Minneapolis
+## 4                         Pumpkin Ale     16 NorthGate Brewing  Minneapolis
+## 5                     American Porter     16 NorthGate Brewing  Minneapolis
+## 6 Extra Special / Strong Bitter (ESB)     16 NorthGate Brewing  Minneapolis
+##   State
+## 1    MN
+## 2    MN
+## 3    MN
+## 4    MN
+## 5    MN
+## 6    MN</code></pre>
 <pre class="r"><code>tail(mergedBeerData)</code></pre>
-<pre><code>##      Brewery_id                 Beer_name Beer_ID   ABV
-## 2405        556             Pilsner Ukiah      98 0.055
-## 2406        557  Heinnieweisse Weissebier      52 0.049
-## 2407        557           Snapperhead IPA      51 0.068
-## 2408        557         Moo Thunder Stout      50 0.049
-## 2409        557         Porkslap Pale Ale      49 0.043
-## 2410        558 Urban Wilderness Pale Ale      30 0.049
-##      IBU                   Style Ounces
-## 2405  NA         German Pilsener     12
-## 2406  NA              Hefeweizen     12
-## 2407  NA            American IPA     12
-## 2408  NA      Milk / Sweet Stout     12
-## 2409  NA American Pale Ale (APA)     12
-## 2410  NA        English Pale Ale     12
-##                       Brewery_name          City State
-## 2405         Ukiah Brewing Company         Ukiah    CA
-## 2406       Butternuts Beer and Ale Garrattsville    NY
-## 2407       Butternuts Beer and Ale Garrattsville    NY
-## 2408       Butternuts Beer and Ale Garrattsville    NY
-## 2409       Butternuts Beer and Ale Garrattsville    NY
-## 2410 Sleeping Lady Brewing Company     Anchorage    AK</code></pre>
+<pre><code>##      Brewery_id                 Beer_name Beer_ID   ABV IBU
+## 2405        556             Pilsner Ukiah      98 0.055  NA
+## 2406        557  Heinnieweisse Weissebier      52 0.049  NA
+## 2407        557           Snapperhead IPA      51 0.068  NA
+## 2408        557         Moo Thunder Stout      50 0.049  NA
+## 2409        557         Porkslap Pale Ale      49 0.043  NA
+## 2410        558 Urban Wilderness Pale Ale      30 0.049  NA
+##                        Style Ounces                  Brewery_name          City
+## 2405         German Pilsener     12         Ukiah Brewing Company         Ukiah
+## 2406              Hefeweizen     12       Butternuts Beer and Ale Garrattsville
+## 2407            American IPA     12       Butternuts Beer and Ale Garrattsville
+## 2408      Milk / Sweet Stout     12       Butternuts Beer and Ale Garrattsville
+## 2409 American Pale Ale (APA)     12       Butternuts Beer and Ale Garrattsville
+## 2410        English Pale Ale     12 Sleeping Lady Brewing Company     Anchorage
+##      State
+## 2405    CA
+## 2406    NY
+## 2407    NY
+## 2408    NY
+## 2409    NY
+## 2410    AK</code></pre>
 </div>
 <div id="address-the-missing-values-in-each-column." class="section level3">
 <h3>3. Address the missing values in each column.</h3>
@@ -431,12 +431,10 @@ head(mergedBeerData)</code></pre>
 
 
 sapply(mergedBeerData, function(x) sum(is.na(x)))</code></pre>
-<pre><code>##   Brewery_id    Beer_name      Beer_ID          ABV 
-##            0            0            0           62 
-##          IBU        Style       Ounces Brewery_name 
-##         1005            5            0            0 
-##         City        State 
-##            0            0</code></pre>
+<pre><code>##   Brewery_id    Beer_name      Beer_ID          ABV          IBU        Style 
+##            0            0            0           62         1005            5 
+##       Ounces Brewery_name         City        State 
+##            0            0            0            0</code></pre>
 <pre class="r"><code>row.has.na &lt;- apply(mergedBeerData, 1, function(x){any(is.na(x))})
 sum(row.has.na)</code></pre>
 <pre><code>## [1] 1007</code></pre>
@@ -579,22 +577,18 @@ with(median.ABV.IBU_filtered,
 <pre class="r"><code># arrange by ABV in descending order, print state for first observation
 mergedBeerData$ABV.rank &lt;- dense_rank(-mergedBeerData$ABV)
 filter(mergedBeerData,ABV.rank == 1)</code></pre>
-<pre><code>##   Brewery_id
-## 1         52
-##                                              Beer_name
-## 1 Lee Hill Series Vol. 5 - Belgian Style Quadrupel Ale
-##   Beer_ID   ABV IBU            Style Ounces
-## 1    2565 0.128  NA Quadrupel (Quad)   19.2
-##              Brewery_name    City State ABV.rank
-## 1 Upslope Brewing Company Boulder    CO        1</code></pre>
+<pre><code>##   Brewery_id                                            Beer_name Beer_ID   ABV
+## 1         52 Lee Hill Series Vol. 5 - Belgian Style Quadrupel Ale    2565 0.128
+##   IBU            Style Ounces            Brewery_name    City State ABV.rank
+## 1  NA Quadrupel (Quad)   19.2 Upslope Brewing Company Boulder    CO        1</code></pre>
 <pre class="r"><code>mergedBeerData$IBU.rank &lt;- dense_rank(-mergedBeerData$IBU)
 filter(mergedBeerData,IBU.rank == 1)</code></pre>
 <pre><code>##   Brewery_id                 Beer_name Beer_ID   ABV IBU
 ## 1        375 Bitter Bitch Imperial IPA     980 0.082 138
-##                            Style Ounces
-## 1 American Double / Imperial IPA     12
-##              Brewery_name    City State ABV.rank IBU.rank
-## 1 Astoria Brewing Company Astoria    OR       23        1</code></pre>
+##                            Style Ounces            Brewery_name    City State
+## 1 American Double / Imperial IPA     12 Astoria Brewing Company Astoria    OR
+##   ABV.rank IBU.rank
+## 1       23        1</code></pre>
 </div>
 <div id="comment-on-the-summary-statistics-and-distribution-of-the-abv-variable." class="section level3">
 <h3>6. Comment on the summary statistics and distribution of the ABV variable.</h3>
@@ -610,10 +604,8 @@ filter(mergedBeerData,IBU.rank == 1)</code></pre>
               min(ABV), 
               max(ABV), 
               IQR=IQR(ABV))</code></pre>
-<pre><code>##         mean         sd median range min(ABV) max(ABV)
-## 1 0.05977342 0.01354173  0.056 0.127    0.001    0.128
-##     IQR
-## 1 0.017</code></pre>
+<pre><code>##         mean         sd median range min(ABV) max(ABV)   IQR
+## 1 0.05977342 0.01354173  0.056 0.127    0.001    0.128 0.017</code></pre>
 <pre class="r"><code>mergedBeerData.ABV_filtered %&gt;% 
   ggplot(aes(x=ABV)) + 
   geom_histogram(binwidth = 0.004, color = &quot;black&quot;, fill = &quot;darkorange2&quot;) +
@@ -646,10 +638,8 @@ filter(mergedBeerData,IBU.rank == 1)</code></pre>
               min(ABV), 
               max(ABV), 
               IQR=IQR(ABV))</code></pre>
-<pre><code>##         mean         sd median range min(ABV) max(ABV)
-## 1 0.05991875 0.01358475  0.057 0.098    0.027    0.125
-##     IQR
-## 1 0.018</code></pre>
+<pre><code>##         mean         sd median range min(ABV) max(ABV)   IQR
+## 1 0.05991875 0.01358475  0.057 0.098    0.027    0.125 0.018</code></pre>
 </div>
 <div id="is-there-an-apparent-relationship-between-the-bitterness-of-the-beer-and-its-alcoholic-content-draw-a-scatter-plot." class="section level3">
 <h3>7. Is there an apparent relationship between the bitterness of the beer and its alcoholic content? Draw a scatter plot.</h3>
