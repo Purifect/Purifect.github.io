@@ -279,12 +279,15 @@ $(document).ready(function () {
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="index.html"></a>
+      <a class="navbar-brand" href="index.html">My Website</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="index.html">Home</a>
+  <a href="index.html">Homee</a>
+</li>
+<li>
+  <a href="aboutme.html">About Me</a>
 </li>
 <li>
   <a href="CaseStudy1_Group3_Combined.html">Case Study 1</a>
@@ -379,20 +382,20 @@ head(mergedBeerData)</code></pre>
 ## 4          1       Pumpion    2689 0.060  38
 ## 5          1    Stronghold    2688 0.060  25
 ## 6          1   Parapet ESB    2687 0.056  47
-##                                 Style Ounces       Brewery_name        City
-## 1                        American IPA     16 NorthGate Brewing  Minneapolis
-## 2                  Milk / Sweet Stout     16 NorthGate Brewing  Minneapolis
-## 3                   English Brown Ale     16 NorthGate Brewing  Minneapolis
-## 4                         Pumpkin Ale     16 NorthGate Brewing  Minneapolis
-## 5                     American Porter     16 NorthGate Brewing  Minneapolis
-## 6 Extra Special / Strong Bitter (ESB)     16 NorthGate Brewing  Minneapolis
-##   State
-## 1    MN
-## 2    MN
-## 3    MN
-## 4    MN
-## 5    MN
-## 6    MN</code></pre>
+##                                 Style Ounces       Brewery_name
+## 1                        American IPA     16 NorthGate Brewing 
+## 2                  Milk / Sweet Stout     16 NorthGate Brewing 
+## 3                   English Brown Ale     16 NorthGate Brewing 
+## 4                         Pumpkin Ale     16 NorthGate Brewing 
+## 5                     American Porter     16 NorthGate Brewing 
+## 6 Extra Special / Strong Bitter (ESB)     16 NorthGate Brewing 
+##          City State
+## 1 Minneapolis    MN
+## 2 Minneapolis    MN
+## 3 Minneapolis    MN
+## 4 Minneapolis    MN
+## 5 Minneapolis    MN
+## 6 Minneapolis    MN</code></pre>
 <pre class="r"><code>tail(mergedBeerData)</code></pre>
 <pre><code>##      Brewery_id                 Beer_name Beer_ID   ABV IBU
 ## 2405        556             Pilsner Ukiah      98 0.055  NA
@@ -401,20 +404,20 @@ head(mergedBeerData)</code></pre>
 ## 2408        557         Moo Thunder Stout      50 0.049  NA
 ## 2409        557         Porkslap Pale Ale      49 0.043  NA
 ## 2410        558 Urban Wilderness Pale Ale      30 0.049  NA
-##                        Style Ounces                  Brewery_name          City
-## 2405         German Pilsener     12         Ukiah Brewing Company         Ukiah
-## 2406              Hefeweizen     12       Butternuts Beer and Ale Garrattsville
-## 2407            American IPA     12       Butternuts Beer and Ale Garrattsville
-## 2408      Milk / Sweet Stout     12       Butternuts Beer and Ale Garrattsville
-## 2409 American Pale Ale (APA)     12       Butternuts Beer and Ale Garrattsville
-## 2410        English Pale Ale     12 Sleeping Lady Brewing Company     Anchorage
-##      State
-## 2405    CA
-## 2406    NY
-## 2407    NY
-## 2408    NY
-## 2409    NY
-## 2410    AK</code></pre>
+##                        Style Ounces                  Brewery_name
+## 2405         German Pilsener     12         Ukiah Brewing Company
+## 2406              Hefeweizen     12       Butternuts Beer and Ale
+## 2407            American IPA     12       Butternuts Beer and Ale
+## 2408      Milk / Sweet Stout     12       Butternuts Beer and Ale
+## 2409 American Pale Ale (APA)     12       Butternuts Beer and Ale
+## 2410        English Pale Ale     12 Sleeping Lady Brewing Company
+##               City State
+## 2405         Ukiah    CA
+## 2406 Garrattsville    NY
+## 2407 Garrattsville    NY
+## 2408 Garrattsville    NY
+## 2409 Garrattsville    NY
+## 2410     Anchorage    AK</code></pre>
 </div>
 <div id="address-the-missing-values-in-each-column." class="section level3">
 <h3>3. Address the missing values in each column.</h3>
@@ -431,10 +434,10 @@ head(mergedBeerData)</code></pre>
 
 
 sapply(mergedBeerData, function(x) sum(is.na(x)))</code></pre>
-<pre><code>##   Brewery_id    Beer_name      Beer_ID          ABV          IBU        Style 
-##            0            0            0           62         1005            5 
-##       Ounces Brewery_name         City        State 
-##            0            0            0            0</code></pre>
+<pre><code>##   Brewery_id    Beer_name      Beer_ID          ABV          IBU 
+##            0            0            0           62         1005 
+##        Style       Ounces Brewery_name         City        State 
+##            5            0            0            0            0</code></pre>
 <pre class="r"><code>row.has.na &lt;- apply(mergedBeerData, 1, function(x){any(is.na(x))})
 sum(row.has.na)</code></pre>
 <pre><code>## [1] 1007</code></pre>
@@ -577,18 +580,20 @@ with(median.ABV.IBU_filtered,
 <pre class="r"><code># arrange by ABV in descending order, print state for first observation
 mergedBeerData$ABV.rank &lt;- dense_rank(-mergedBeerData$ABV)
 filter(mergedBeerData,ABV.rank == 1)</code></pre>
-<pre><code>##   Brewery_id                                            Beer_name Beer_ID   ABV
-## 1         52 Lee Hill Series Vol. 5 - Belgian Style Quadrupel Ale    2565 0.128
-##   IBU            Style Ounces            Brewery_name    City State ABV.rank
-## 1  NA Quadrupel (Quad)   19.2 Upslope Brewing Company Boulder    CO        1</code></pre>
+<pre><code>##   Brewery_id                                            Beer_name
+## 1         52 Lee Hill Series Vol. 5 - Belgian Style Quadrupel Ale
+##   Beer_ID   ABV IBU            Style Ounces            Brewery_name
+## 1    2565 0.128  NA Quadrupel (Quad)   19.2 Upslope Brewing Company
+##      City State ABV.rank
+## 1 Boulder    CO        1</code></pre>
 <pre class="r"><code>mergedBeerData$IBU.rank &lt;- dense_rank(-mergedBeerData$IBU)
 filter(mergedBeerData,IBU.rank == 1)</code></pre>
 <pre><code>##   Brewery_id                 Beer_name Beer_ID   ABV IBU
 ## 1        375 Bitter Bitch Imperial IPA     980 0.082 138
-##                            Style Ounces            Brewery_name    City State
-## 1 American Double / Imperial IPA     12 Astoria Brewing Company Astoria    OR
-##   ABV.rank IBU.rank
-## 1       23        1</code></pre>
+##                            Style Ounces            Brewery_name    City
+## 1 American Double / Imperial IPA     12 Astoria Brewing Company Astoria
+##   State ABV.rank IBU.rank
+## 1    OR       23        1</code></pre>
 </div>
 <div id="comment-on-the-summary-statistics-and-distribution-of-the-abv-variable." class="section level3">
 <h3>6. Comment on the summary statistics and distribution of the ABV variable.</h3>
