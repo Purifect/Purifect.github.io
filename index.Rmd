@@ -1,11 +1,7 @@
 ---
-title: "Simple Website"
-author: "Puri"
-date: "2/4/2021"
 output: html_document
 ---
 
-# My First Website
-## Note: The 6 lines of the text above the YAML tags
-### We will Knit the RMD to a html file next
-Them push index.html to the github.io repo.
+# Welcome to Purifect!
+###
+### Puri's First Website

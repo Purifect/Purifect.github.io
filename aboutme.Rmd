@@ -1,0 +1,21 @@
+---
+output: html_document
+---
+
+# Sawasdee Ka!
+### My name is Puri :)
+
+
+#
+I'm originally from Thailand but now live in Texas.
+
+Before coming to the states, I was a Geophysicist for Chevron in Bangkok.
+
+Since arriving in the states I've experience I continue to work in the O&G industry but as a Data Analyst for EOG Resources.
+
+While working at EOG, my interest has shifted from geology to Data Science.  I'm now pursuing a Master Degree in Data Science at SMU!
+
+
+
+#
+*This website is my journey, it's a record of my progress during my time at SMU.  Please check it out!*
