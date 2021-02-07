@@ -1,0 +1,12 @@
+name: BeerData
+title: BeerData
+username:
+account: purifect
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 3594320
+bundleId: 4190678
+url: https://purifect.shinyapps.io/BeerData/
+when: 1612670149.45038
+asMultiple: FALSE
+asStatic: FALSE
