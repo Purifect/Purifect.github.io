@@ -1,6 +1,6 @@
 name: "my-website"
 navbar:
-  title: "My Website"
+  title: "Purifect"
   left:
     - text: "Home"
       href: index.html
@@ -8,3 +8,5 @@ navbar:
       href: aboutme.html
     - text: "Case Study 1"
       href: CaseStudy1_Group3_Combined.html
+    - text: "Case Study 1 Shiny"
+      href: https://purifect.shinyapps.io/BeerData/
