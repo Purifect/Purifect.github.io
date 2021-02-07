@@ -279,18 +279,18 @@ $(document).ready(function () {
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="index.html">My Website</a>
+      <a class="navbar-brand" href="index.html">Purifect</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="index.html">Home</a>
-</li>
-<li>
   <a href="aboutme.html">About Me</a>
 </li>
 <li>
   <a href="CaseStudy1_Group3_Combined.html">Case Study 1</a>
+</li>
+<li>
+  <a href="https://purifect.shinyapps.io/BeerData/">Case Study 1 Shiny</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -315,8 +315,8 @@ $(document).ready(function () {
 <p>This analysis is useful for Budweiser future business decision.</p>
 <div id="read-in-the-data-from-csv-files" class="section level3">
 <h3>Read in the data from csv files</h3>
-<pre class="r"><code>beerDataOrig = read.csv(&quot;/Users/puri/DataScience@SMU/02.DS-6306 Doing Data Science/Case Study 1 - Final/Beers.csv&quot;,header = TRUE)
-breweryDataOrig = read.csv(&quot;/Users/puri/DataScience@SMU/02.DS-6306 Doing Data Science/Case Study 1 - Final/Breweries.csv&quot;,header = TRUE)</code></pre>
+<pre class="r"><code>beerDataOrig = read.csv(&quot;Beers.csv&quot;,header = TRUE)
+breweryDataOrig = read.csv(&quot;Breweries.csv&quot;,header = TRUE)</code></pre>
 </div>
 <div id="how-many-breweries-are-present-in-each-state" class="section level3">
 <h3>1. How many breweries are present in each state?</h3>
@@ -324,7 +324,7 @@ breweryDataOrig = read.csv(&quot;/Users/puri/DataScience@SMU/02.DS-6306 Doing Da
 <p>The plot shows that Colorado has the most breweries in the country, which is 47 breweries.</p>
 <pre class="r"><code>breweryDataOrig = as.data.frame(breweryDataOrig)
 
-Breweries.in.each.state = count(breweryDataOrig$State)
+Breweries.in.each.state = breweryDataOrig %&gt;% group_by(State) %&gt;% tally()
 names(Breweries.in.each.state)[1] &lt;- &quot;state&quot;
 Breweries.in.each.state$state &lt;-
   str_replace_all(string=Breweries.in.each.state$state, 
@@ -344,7 +344,7 @@ labels &lt;-
 
 names(labels)[6] &lt;- &quot;breweries_count&quot;
 
-plot_usmap(data = Breweries.in.each.state, values = &quot;freq&quot;, labels=FALSE) + 
+plot_usmap(data = Breweries.in.each.state, values = &quot;n&quot;, labels=FALSE) + 
   scale_fill_continuous(low = &quot;white&quot;, 
                         high = &quot;orange&quot;, 
                         name = &quot;# of Breweries&quot;, 
@@ -375,49 +375,35 @@ names(mergedBeerData)[names(mergedBeerData)==&quot;Name.x&quot;] &lt;- &quot;Bee
 names(mergedBeerData)[names(mergedBeerData)==&quot;Name.y&quot;] &lt;- &quot;Brewery_name&quot;
 
 head(mergedBeerData)</code></pre>
-<pre><code>##   Brewery_id     Beer_name Beer_ID   ABV IBU
-## 1          1  Get Together    2692 0.045  50
-## 2          1 Maggie&#39;s Leap    2691 0.049  26
-## 3          1    Wall&#39;s End    2690 0.048  19
-## 4          1       Pumpion    2689 0.060  38
-## 5          1    Stronghold    2688 0.060  25
-## 6          1   Parapet ESB    2687 0.056  47
-##                                 Style Ounces       Brewery_name
-## 1                        American IPA     16 NorthGate Brewing 
-## 2                  Milk / Sweet Stout     16 NorthGate Brewing 
-## 3                   English Brown Ale     16 NorthGate Brewing 
-## 4                         Pumpkin Ale     16 NorthGate Brewing 
-## 5                     American Porter     16 NorthGate Brewing 
-## 6 Extra Special / Strong Bitter (ESB)     16 NorthGate Brewing 
-##          City State
-## 1 Minneapolis    MN
-## 2 Minneapolis    MN
-## 3 Minneapolis    MN
-## 4 Minneapolis    MN
-## 5 Minneapolis    MN
-## 6 Minneapolis    MN</code></pre>
+<pre><code>##   Brewery_id     Beer_name Beer_ID   ABV IBU                               Style
+## 1          1  Get Together    2692 0.045  50                        American IPA
+## 2          1 Maggie&#39;s Leap    2691 0.049  26                  Milk / Sweet Stout
+## 3          1    Wall&#39;s End    2690 0.048  19                   English Brown Ale
+## 4          1       Pumpion    2689 0.060  38                         Pumpkin Ale
+## 5          1    Stronghold    2688 0.060  25                     American Porter
+## 6          1   Parapet ESB    2687 0.056  47 Extra Special / Strong Bitter (ESB)
+##   Ounces       Brewery_name        City State
+## 1     16 NorthGate Brewing  Minneapolis    MN
+## 2     16 NorthGate Brewing  Minneapolis    MN
+## 3     16 NorthGate Brewing  Minneapolis    MN
+## 4     16 NorthGate Brewing  Minneapolis    MN
+## 5     16 NorthGate Brewing  Minneapolis    MN
+## 6     16 NorthGate Brewing  Minneapolis    MN</code></pre>
 <pre class="r"><code>tail(mergedBeerData)</code></pre>
-<pre><code>##      Brewery_id                 Beer_name Beer_ID   ABV IBU
-## 2405        556             Pilsner Ukiah      98 0.055  NA
-## 2406        557  Heinnieweisse Weissebier      52 0.049  NA
-## 2407        557           Snapperhead IPA      51 0.068  NA
-## 2408        557         Moo Thunder Stout      50 0.049  NA
-## 2409        557         Porkslap Pale Ale      49 0.043  NA
-## 2410        558 Urban Wilderness Pale Ale      30 0.049  NA
-##                        Style Ounces                  Brewery_name
-## 2405         German Pilsener     12         Ukiah Brewing Company
-## 2406              Hefeweizen     12       Butternuts Beer and Ale
-## 2407            American IPA     12       Butternuts Beer and Ale
-## 2408      Milk / Sweet Stout     12       Butternuts Beer and Ale
-## 2409 American Pale Ale (APA)     12       Butternuts Beer and Ale
-## 2410        English Pale Ale     12 Sleeping Lady Brewing Company
-##               City State
-## 2405         Ukiah    CA
-## 2406 Garrattsville    NY
-## 2407 Garrattsville    NY
-## 2408 Garrattsville    NY
-## 2409 Garrattsville    NY
-## 2410     Anchorage    AK</code></pre>
+<pre><code>##      Brewery_id                 Beer_name Beer_ID   ABV IBU                   Style
+## 2405        556             Pilsner Ukiah      98 0.055  NA         German Pilsener
+## 2406        557  Heinnieweisse Weissebier      52 0.049  NA              Hefeweizen
+## 2407        557           Snapperhead IPA      51 0.068  NA            American IPA
+## 2408        557         Moo Thunder Stout      50 0.049  NA      Milk / Sweet Stout
+## 2409        557         Porkslap Pale Ale      49 0.043  NA American Pale Ale (APA)
+## 2410        558 Urban Wilderness Pale Ale      30 0.049  NA        English Pale Ale
+##      Ounces                  Brewery_name          City State
+## 2405     12         Ukiah Brewing Company         Ukiah    CA
+## 2406     12       Butternuts Beer and Ale Garrattsville    NY
+## 2407     12       Butternuts Beer and Ale Garrattsville    NY
+## 2408     12       Butternuts Beer and Ale Garrattsville    NY
+## 2409     12       Butternuts Beer and Ale Garrattsville    NY
+## 2410     12 Sleeping Lady Brewing Company     Anchorage    AK</code></pre>
 </div>
 <div id="address-the-missing-values-in-each-column." class="section level3">
 <h3>3. Address the missing values in each column.</h3>
@@ -434,10 +420,10 @@ head(mergedBeerData)</code></pre>
 
 
 sapply(mergedBeerData, function(x) sum(is.na(x)))</code></pre>
-<pre><code>##   Brewery_id    Beer_name      Beer_ID          ABV          IBU 
-##            0            0            0           62         1005 
-##        Style       Ounces Brewery_name         City        State 
-##            5            0            0            0            0</code></pre>
+<pre><code>##   Brewery_id    Beer_name      Beer_ID          ABV          IBU        Style 
+##            0            0            0           62         1005            5 
+##       Ounces Brewery_name         City        State 
+##            0            0            0            0</code></pre>
 <pre class="r"><code>row.has.na &lt;- apply(mergedBeerData, 1, function(x){any(is.na(x))})
 sum(row.has.na)</code></pre>
 <pre><code>## [1] 1007</code></pre>
@@ -580,20 +566,18 @@ with(median.ABV.IBU_filtered,
 <pre class="r"><code># arrange by ABV in descending order, print state for first observation
 mergedBeerData$ABV.rank &lt;- dense_rank(-mergedBeerData$ABV)
 filter(mergedBeerData,ABV.rank == 1)</code></pre>
-<pre><code>##   Brewery_id                                            Beer_name
-## 1         52 Lee Hill Series Vol. 5 - Belgian Style Quadrupel Ale
-##   Beer_ID   ABV IBU            Style Ounces            Brewery_name
-## 1    2565 0.128  NA Quadrupel (Quad)   19.2 Upslope Brewing Company
-##      City State ABV.rank
-## 1 Boulder    CO        1</code></pre>
+<pre><code>##   Brewery_id                                            Beer_name Beer_ID   ABV IBU
+## 1         52 Lee Hill Series Vol. 5 - Belgian Style Quadrupel Ale    2565 0.128  NA
+##              Style Ounces            Brewery_name    City State ABV.rank
+## 1 Quadrupel (Quad)   19.2 Upslope Brewing Company Boulder    CO        1</code></pre>
 <pre class="r"><code>mergedBeerData$IBU.rank &lt;- dense_rank(-mergedBeerData$IBU)
 filter(mergedBeerData,IBU.rank == 1)</code></pre>
 <pre><code>##   Brewery_id                 Beer_name Beer_ID   ABV IBU
 ## 1        375 Bitter Bitch Imperial IPA     980 0.082 138
-##                            Style Ounces            Brewery_name    City
-## 1 American Double / Imperial IPA     12 Astoria Brewing Company Astoria
-##   State ABV.rank IBU.rank
-## 1    OR       23        1</code></pre>
+##                            Style Ounces            Brewery_name    City State
+## 1 American Double / Imperial IPA     12 Astoria Brewing Company Astoria    OR
+##   ABV.rank IBU.rank
+## 1       23        1</code></pre>
 </div>
 <div id="comment-on-the-summary-statistics-and-distribution-of-the-abv-variable." class="section level3">
 <h3>6. Comment on the summary statistics and distribution of the ABV variable.</h3>

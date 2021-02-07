@@ -27,8 +27,8 @@ library(ggpubr)
 
 ### Read in the data from csv files
 ```{r}
-beerDataOrig = read.csv("/Users/puri/DataScience@SMU/02.DS-6306 Doing Data Science/Case Study 1 - Final/Beers.csv",header = TRUE)
-breweryDataOrig = read.csv("/Users/puri/DataScience@SMU/02.DS-6306 Doing Data Science/Case Study 1 - Final/Breweries.csv",header = TRUE)
+beerDataOrig = read.csv("Beers.csv",header = TRUE)
+breweryDataOrig = read.csv("Breweries.csv",header = TRUE)
 ```
 
 ### 1. How many breweries are present in each state?
@@ -40,7 +40,7 @@ The plot shows that Colorado has the most breweries in the country, which is 47 
 ```{r}
 breweryDataOrig = as.data.frame(breweryDataOrig)
 
-Breweries.in.each.state = count(breweryDataOrig$State)
+Breweries.in.each.state = breweryDataOrig %>% group_by(State) %>% tally()
 names(Breweries.in.each.state)[1] <- "state"
 Breweries.in.each.state$state <-
   str_replace_all(string=Breweries.in.each.state$state, 
@@ -60,7 +60,7 @@ labels <-
 
 names(labels)[6] <- "breweries_count"
 
-plot_usmap(data = Breweries.in.each.state, values = "freq", labels=FALSE) + 
+plot_usmap(data = Breweries.in.each.state, values = "n", labels=FALSE) + 
   scale_fill_continuous(low = "white", 
                         high = "orange", 
                         name = "# of Breweries", 

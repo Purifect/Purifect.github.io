@@ -2,8 +2,6 @@ name: "my-website"
 navbar:
   title: "Purifect"
   left:
-    - text: "Home"
-      href: index.html
     - text: "About Me"
       href: aboutme.html
     - text: "Case Study 1"
