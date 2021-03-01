@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Puri Rudick" />
+
+
+<title>Case Study 2 - Employee Attrition and Salary Prediction</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
+<script src="site_libs/anchor-sections-1.0/anchor-sections.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Purifect</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="aboutme.html">About Me</a>
+</li>
+<li>
+  <a href="CaseStudy1_Group3_Combined.html">Case Study 1</a>
+</li>
+<li>
+  <a href="CaseStudy2_Attrition.html">Case Study 2</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Case Study 2 - Employee Attrition and Salary Prediction</h1>
+<h4 class="author">Puri Rudick</h4>
+<h4 class="date">2/21/2021</h4>
+
+</div>
+
+
+<p><a href="https://purifect.shinyapps.io/Employee_Attrition/">R Shiny App</a></p>
+<p>The analysis of employee attrition and salary prediction was conducted using 870 observations (employees) dataset from DDSAnalytics Company. Some of the focuses of this exploratory data analysis were placed on attrition and salary prediction, and trends for specific job roles.</p>
+<p>This analysis is useful for DDSAnalytics future business decision.</p>
+<pre class="r"><code># Read in the data
+DataOrig = read.csv(&quot;CaseStudy2-data.csv&quot;,header = TRUE)
+
+# Explore missing values in each columns - There is none!
+sapply(DataOrig, function(x) sum(is.na(x)))</code></pre>
+<pre><code>##                       ID                      Age                Attrition 
+##                        0                        0                        0 
+##           BusinessTravel                DailyRate               Department 
+##                        0                        0                        0 
+##         DistanceFromHome                Education           EducationField 
+##                        0                        0                        0 
+##            EmployeeCount           EmployeeNumber  EnvironmentSatisfaction 
+##                        0                        0                        0 
+##                   Gender               HourlyRate           JobInvolvement 
+##                        0                        0                        0 
+##                 JobLevel                  JobRole          JobSatisfaction 
+##                        0                        0                        0 
+##            MaritalStatus            MonthlyIncome              MonthlyRate 
+##                        0                        0                        0 
+##       NumCompaniesWorked                   Over18                 OverTime 
+##                        0                        0                        0 
+##        PercentSalaryHike        PerformanceRating RelationshipSatisfaction 
+##                        0                        0                        0 
+##            StandardHours         StockOptionLevel        TotalWorkingYears 
+##                        0                        0                        0 
+##    TrainingTimesLastYear          WorkLifeBalance           YearsAtCompany 
+##                        0                        0                        0 
+##       YearsInCurrentRole  YearsSinceLastPromotion     YearsWithCurrManager 
+##                        0                        0                        0</code></pre>
+<div id="trends-for-specific-job-roles" class="section level3">
+<h3>Trends for Specific Job Roles</h3>
+<p>Job Role vs. Attrition</p>
+<pre class="r"><code>df.JobRole = DataOrig %&gt;% group_by(JobRole, Attrition) %&gt;% summarise(count=n()) %&gt;% mutate(pct=count/sum(count)) 
+
+df.JobRole %&gt;% ggplot(aes(x=JobRole, y=pct, fill=Attrition)) + geom_bar(stat=&quot;identity&quot;) + 
+  geom_text(aes(label=paste0(round(pct*100,1),&quot;%&quot;)), 
+            position = position_stack(vjust = 0.5), size = 3) + labs(title = &#39;Bar Plot Job Role vs. Attrition&#39;, x = &#39;Job Role&#39;, y = &#39;Percent Attrition&#39;) +
+  theme_classic() + scale_fill_brewer(palette=&quot;Blues&quot;) + coord_flip()</code></pre>
+<p><img src="CaseStudy2_Attrition_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p>Job Role vs. Environment Satisfaction, Job Satisfaction, and Work Life Balance</p>
+<pre class="r"><code>#Prepare data for radar plot
+JobRoleData &lt;- DataOrig %&gt;% 
+  dplyr::group_by(JobRole) %&gt;% 
+  dplyr::summarize(EnvironmentSatisfaction_mean = mean(EnvironmentSatisfaction),     
+                   JobSatisfaction_mean = mean(JobSatisfaction),     
+                   WorkLifeBalance_mean = mean(WorkLifeBalance))
+JobRoleData &lt;-as.data.frame(JobRoleData)
+
+n &lt;- JobRoleData$JobRole
+JobRoleData &lt;- as.data.frame(t(JobRoleData[,-1]))
+colnames(JobRoleData) &lt;- n
+names(JobRoleData) &lt;- sub(&quot; &quot;, &quot;.&quot;, names(JobRoleData))
+
+
+max_min &lt;- data.frame(
+  `Healthcare Representative` = c(3, 2.5), 
+  `Human Resources` = c(3, 2.5),
+  `Laboratory Technician` = c(3, 2.5),
+  `Manager` = c(3, 2.5),
+  `Manufacturing Director` = c(3, 2.5),
+  `Research Director`= c(3, 2.5),
+  `Research Scientist` = c(3, 2.5),
+  `Sales Executive`= c(3, 2.5),
+  `Sales Representative`= c(3, 2.5))
+rownames(max_min) &lt;- c(&quot;Max&quot;, &quot;Min&quot;)
+
+df &lt;- rbind(max_min, JobRoleData)
+
+create_beautiful_radarchart &lt;- function(data, color = &quot;#00AFBB&quot;, 
+                                        vlabels = colnames(data), vlcex = 1,
+                                        caxislabels = NULL, title = NULL, ...){
+  radarchart(
+    data, axistype = 1,
+    # Customize the polygon
+    pcol = color, pfcol = scales::alpha(color, 0.2), plwd = 2, plty = 1,
+    # Customize the grid
+    cglcol = &quot;grey&quot;, cglty = 1, cglwd = 0.8,
+    # Customize the axis
+    axislabcol = &quot;grey&quot;, 
+    # Variable labels
+    vlcex = vlcex, vlabels = vlabels,
+    caxislabels = caxislabels, title = title, ...
+  )
+}
+
+par(mar=c(0,0,0,0))
+# Create the radar charts
+create_beautiful_radarchart(
+  data = df, caxislabels = c(2.5,2.6,2.7,2.8,2.9),
+  color = c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;)
+)
+# Add an horizontal legend
+legend(
+  x=.75, y=-.8, legend = c(&quot;Envi Satisfaction&quot;,&quot;Job Satisfaction&quot;, &quot;Work Life Balance&quot;), horiz = FALSE,
+  bty = &quot;n&quot;, pch = 1 , col = c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;),
+  text.col = &quot;black&quot;, cex = 1, pt.cex = 1.5
+  )</code></pre>
+<p><img src="CaseStudy2_Attrition_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+</div>
+<div id="top-three-factors-for-attrition" class="section level3">
+<h3>Top Three Factors for Attrition</h3>
+<p>To Identify the top three factors for attrition, the analyst created an RShiny app (in the link below) to help visualization the dataset</p>
+<p><a href="https://purifect.shinyapps.io/Employee_Attrition/" class="uri">https://purifect.shinyapps.io/Employee_Attrition/</a></p>
+<p>The top three factors responsible for attrition are Monthly Income, Job Involvement, and Overtime</p>
+<p>Apply the three main factors with kNN technique to create an Attrition Prediction model</p>
+<pre class="r"><code>set.seed(8)
+splitPerc = .7
+
+ImpFactors &lt;- subset(DataOrig, select = c(Attrition, JobInvolvement, MonthlyIncome, OverTime.Num))
+ImpFactors$MonthlyIncome &lt;- scale(ImpFactors$MonthlyIncome)
+#ImpFactors$Age &lt;- scale(ImpFactors$Age)
+
+trainIndices = sample(1:dim(ImpFactors)[1], round(splitPerc * dim(ImpFactors)[1]))
+train.Attrition = ImpFactors[trainIndices,]
+test.Attrition = ImpFactors[-trainIndices,]
+
+# run knn
+classifications = knn(train.Attrition[,c(2:4)], test.Attrition[,c(2:4)], train.Attrition$Attrition, prob = TRUE, k = 21)
+
+# Confusion Matrix
+confusionMatrix(table(test.Attrition$Attrition, classifications))</code></pre>
+<pre><code>## Confusion Matrix and Statistics
+## 
+##      classifications
+##        No Yes
+##   No  217   1
+##   Yes  28  15
+##                                           
+##                Accuracy : 0.8889          
+##                  95% CI : (0.8443, 0.9243)
+##     No Information Rate : 0.9387          
+##     P-Value [Acc &gt; NIR] : 0.9992          
+##                                           
+##                   Kappa : 0.4602          
+##                                           
+##  Mcnemar&#39;s Test P-Value : 1.379e-06       
+##                                           
+##             Sensitivity : 0.8857          
+##             Specificity : 0.9375          
+##          Pos Pred Value : 0.9954          
+##          Neg Pred Value : 0.3488          
+##              Prevalence : 0.9387          
+##          Detection Rate : 0.8314          
+##    Detection Prevalence : 0.8352          
+##       Balanced Accuracy : 0.9116          
+##                                           
+##        &#39;Positive&#39; Class : No              
+## </code></pre>
+<pre class="r"><code># Find Sensitivity and Specificity for Train Set
+classifications_train = knn(train.Attrition[,c(2:4)], train.Attrition[,c(2:4)], train.Attrition$Attrition, prob = TRUE, k = 5)
+
+confusionMatrix(table(train.Attrition$Attrition, classifications_train))</code></pre>
+<pre><code>## Confusion Matrix and Statistics
+## 
+##      classifications_train
+##        No Yes
+##   No  501  11
+##   Yes  70  27
+##                                          
+##                Accuracy : 0.867          
+##                  95% CI : (0.8374, 0.893)
+##     No Information Rate : 0.9376         
+##     P-Value [Acc &gt; NIR] : 1              
+##                                          
+##                   Kappa : 0.3409         
+##                                          
+##  Mcnemar&#39;s Test P-Value : 1.16e-10       
+##                                          
+##             Sensitivity : 0.8774         
+##             Specificity : 0.7105         
+##          Pos Pred Value : 0.9785         
+##          Neg Pred Value : 0.2784         
+##              Prevalence : 0.9376         
+##          Detection Rate : 0.8227         
+##    Detection Prevalence : 0.8407         
+##       Balanced Accuracy : 0.7940         
+##                                          
+##        &#39;Positive&#39; Class : No             
+## </code></pre>
+<p>Loop for many k and one training / test partition</p>
+<pre class="r"><code>accs = data.frame(accuracy = numeric(30), k = numeric(30))
+for(i in 1:30)
+{
+  classifications = knn(train.Attrition[,c(2:4)], test.Attrition[,c(2:4)], train.Attrition$Attrition, prob = TRUE, k = i)
+  table(test.Attrition$Attrition, classifications)
+  CM = confusionMatrix(table(test.Attrition$Attrition, classifications))
+  accs$accuracy[i] = CM$overall[1]
+  accs$k[i] = i
+}
+plot(accs$k,accs$accuracy, type = &quot;l&quot;, xlab = &quot;k&quot;)</code></pre>
+<p><img src="CaseStudy2_Attrition_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p>Then write attrition predicted values for ‘CaseStudy2CompSet No Attrition.csv’ to csv File</p>
+<pre class="r"><code># Read in &#39;No Attrition&#39; file
+No.AttritionOrig &lt;- read.csv(&quot;CaseStudy2CompSet No Attrition.csv&quot;, header=TRUE)
+
+# Only include variables that used in the model
+No.Attrition &lt;- subset(No.AttritionOrig, select = c(ID, JobInvolvement, MonthlyIncome, OverTime))
+# Use Scale with MonthlyIncome and change OverTime to interger value
+No.Attrition$MonthlyIncome &lt;- scale(No.Attrition$MonthlyIncome)
+No.Attrition$OverTime &lt;- as.integer(as.factor(No.Attrition$OverTime))
+
+classifications = knn(train.Attrition[,c(2:4)], No.Attrition[,c(2:4)], train.Attrition$Attrition, k = 21, prob = TRUE)
+
+# Cleanup the df to match example file before writing
+Attrition.Prediction &lt;- as.data.frame(classifications)
+Attrition.Prediction$ID &lt;- No.Attrition$ID
+No.Attrition_pred &lt;- merge(x = No.AttritionOrig, y = Attrition.Prediction,
+                          by.x = &quot;ID&quot;, by.y = &quot;ID&quot;, all = TRUE)
+names(No.Attrition_pred)[names(No.Attrition_pred)==&quot;classifications&quot;] &lt;- &quot;Attrition&quot;
+No.Attrition_pred &lt;- No.Attrition_pred %&gt;% relocate(&quot;Attrition&quot;, .after = &quot;ID&quot;)
+
+# Write to file
+write.csv(No.Attrition_pred, &quot;Case2PredictionsRudick Attrition.csv&quot;, row.names = FALSE, quote=FALSE)</code></pre>
+</div>
+<div id="linear-regression-for-monthly-income-prediction" class="section level3">
+<h3>Linear Regression for Monthly Income Prediction</h3>
+<p>Find correlation coefficient with p-value for numerical variables</p>
+<pre class="r"><code>Num_col &lt;- subset(DataOrig, select = -c(Attrition, BusinessTravel,
+                                    Department, EducationField,
+                                    Gender, JobRole, MaritalStatus,
+                                    Over18, OverTime,
+                                    ID, EmployeeCount,
+                                    EmployeeNumber, StandardHours
+                                    ))
+M &lt;- cor(Num_col)
+corrplot(M, type=&quot;upper&quot;)</code></pre>
+<p><img src="CaseStudy2_Attrition_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<pre class="r"><code># Run rcorr(as.matrix(Num_col)) for correlation coefficient with p-value
+subset(DataOrig, select = c(MonthlyIncome, Age, JobLevel, TotalWorkingYears, YearsAtCompany, YearsInCurrentRole, YearsSinceLastPromotion, YearsWithCurrManager)) %&gt;%
+  ggpairs()</code></pre>
+<p><img src="CaseStudy2_Attrition_files/figure-html/unnamed-chunk-10-2.png" width="672" /></p>
+<pre class="r"><code># There are 7 columns that have statistically significant correlation (p-value &lt; .05) with good range of correlation coefficient which are Age, JobLevel, TotalWorkingYears, YearsAtCompany, YearsInCurrentRole, YearsSinceLastPromotion, YearsWithCurrManager
+
+# When put all 7 columns to the linear regression model, only JobLevel and TotalWorkingYears are significant
+modelNum &lt;- lm(MonthlyIncome ~ Age+JobLevel+TotalWorkingYears+YearsAtCompany+YearsInCurrentRole+YearsSinceLastPromotion+YearsWithCurrManager, data = Num_col)
+summary(modelNum)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = MonthlyIncome ~ Age + JobLevel + TotalWorkingYears + 
+##     YearsAtCompany + YearsInCurrentRole + YearsSinceLastPromotion + 
+##     YearsWithCurrManager, data = Num_col)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -5699.0  -870.0    29.6   715.0  3942.5 
+## 
+## Coefficients:
+##                          Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)             -1608.531    232.252  -6.926 8.47e-12 ***
+## Age                        -3.019      7.105  -0.425   0.6709    
+## JobLevel                 3717.865     69.119  53.789  &lt; 2e-16 ***
+## TotalWorkingYears          73.281     13.143   5.576 3.30e-08 ***
+## YearsAtCompany             -5.555     16.619  -0.334   0.7382    
+## YearsInCurrentRole        -10.207     21.409  -0.477   0.6336    
+## YearsSinceLastPromotion     1.496     19.414   0.077   0.9386    
+## YearsWithCurrManager      -48.944     21.270  -2.301   0.0216 *  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 1380 on 862 degrees of freedom
+## Multiple R-squared:  0.9106, Adjusted R-squared:  0.9099 
+## F-statistic:  1254 on 7 and 862 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>Find correlation coefficient with p-value for numerical variables</p>
+<pre class="r"><code>Categorical &lt;- subset(DataOrig, select = c(MonthlyIncome, BusinessTravel,
+                                           Department, EducationField,
+                                           Gender, JobRole, MaritalStatus,
+                                           OverTime))
+
+modelCat &lt;- lm(MonthlyIncome ~., data = Categorical)
+summary(modelCat)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = MonthlyIncome ~ ., data = Categorical)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -5242.9 -1226.9  -398.6  1118.8  6924.8 
+## 
+## Coefficients:
+##                                  Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)                       8078.62     960.04   8.415  &lt; 2e-16 ***
+## BusinessTravelTravel_Frequently    797.40     264.70   3.012  0.00267 ** 
+## BusinessTravelTravel_Rarely        666.84     224.93   2.965  0.00311 ** 
+## DepartmentResearch &amp; Development -1551.43     893.70  -1.736  0.08293 .  
+## DepartmentSales                  -2081.57     914.06  -2.277  0.02302 *  
+## EducationFieldLife Sciences        347.96     695.31   0.500  0.61690    
+## EducationFieldMarketing            415.35     737.18   0.563  0.57329    
+## EducationFieldMedical              216.85     696.47   0.311  0.75560    
+## EducationFieldOther                199.64     744.21   0.268  0.78857    
+## EducationFieldTechnical Degree     329.01     724.95   0.454  0.65006    
+## GenderMale                          50.67     140.41   0.361  0.71829    
+## JobRoleHuman Resources           -5616.70     941.71  -5.964 3.60e-09 ***
+## JobRoleLaboratory Technician     -4223.44     283.42 -14.902  &lt; 2e-16 ***
+## JobRoleManager                    9727.44     478.31  20.337  &lt; 2e-16 ***
+## JobRoleManufacturing Director       13.12     316.15   0.041  0.96691    
+## JobRoleResearch Director          8305.85     363.97  22.820  &lt; 2e-16 ***
+## JobRoleResearch Scientist        -4189.28     277.17 -15.115  &lt; 2e-16 ***
+## JobRoleSales Executive             -57.11     672.03  -0.085  0.93230    
+## JobRoleSales Representative      -4344.99     714.54  -6.081 1.81e-09 ***
+## MaritalStatusMarried               -18.74     178.26  -0.105  0.91629    
+## MaritalStatusSingle                -58.02     193.46  -0.300  0.76434    
+## OverTimeYes                         39.30     151.90   0.259  0.79593    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 2006 on 848 degrees of freedom
+## Multiple R-squared:  0.8142, Adjusted R-squared:  0.8096 
+## F-statistic:   177 on 21 and 848 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code># After trying including every categorical variables to the MLR model, none of them makes the model better and/or makes the ,pde; statistically significant</code></pre>
+<p>The analyst decided to use JobLevel, TotalWorkingYears, YearsWithCurrManager for MLR model</p>
+<pre class="r"><code>fit &lt;- lm(MonthlyIncome ~ JobLevel+TotalWorkingYears+YearsWithCurrManager, data=DataOrig)
+summary(fit)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = MonthlyIncome ~ JobLevel + TotalWorkingYears + YearsWithCurrManager, 
+##     data = DataOrig)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -5643.3  -874.3    34.4   722.3  3920.6 
+## 
+## Coefficients:
+##                      Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)          -1699.16     102.13 -16.636  &lt; 2e-16 ***
+## JobLevel              3717.24      68.62  54.175  &lt; 2e-16 ***
+## TotalWorkingYears       68.34      10.44   6.545 1.01e-10 ***
+## YearsWithCurrManager   -59.33      14.74  -4.026 6.18e-05 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 1378 on 866 degrees of freedom
+## Multiple R-squared:  0.9105, Adjusted R-squared:  0.9102 
+## F-statistic:  2938 on 3 and 866 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code># Check MLR assumptions 
+par(mfrow=c(2,2))
+# Check Multiple Linear Regression Asumption
+plot(fit$fitted.values, fit$residuals, main = &quot;Plot of Residuals vs. Fitted Values&quot;)
+
+plot(DataOrig$JobLevel, fit$residuals, main = &quot;Plot of Residuals vs. Fitted Values&quot;)
+
+hist(fit$residuals)
+#ggplot(data = fit, aes(x = fit$residuals)) +
+#  geom_histogram() +
+#  labs(title = &#39;Histogram of Residuals&#39;, x = &#39;Residuals&#39;, y = &#39;Frequency&#39;)
+
+qqnorm(fit$residuals,  ylab = &quot;Residual Quantiles&quot;)</code></pre>
+<p><img src="CaseStudy2_Attrition_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<pre class="r"><code># Find model&#39;s RMSE 
+preds = predict(fit, newdata = DataOrig)
+
+RMSE = data.frame(Observed = DataOrig$MonthlyIncome,
+                  Predicted = preds)
+RMSE$Residual = RMSE$Observed - RMSE$Predicted
+RMSE$SquaredResidual = RMSE$Residual^2
+
+mean(sqrt(RMSE$SquaredResidual)) #1,035.798</code></pre>
+<pre><code>## [1] 1035.798</code></pre>
+<p>Cross Validation by creating Train and Test dataset from the original dataset</p>
+<pre class="r"><code># Separated dataset into Train and Test dataset
+set.seed(8)
+splitPerc = .7
+
+MLR_trainIndices = sample(1:dim(DataOrig)[1], round(splitPerc * dim(DataOrig)[1]))
+train.MonthlyIncome = DataOrig[MLR_trainIndices,]
+test.MonthlyIncome = DataOrig[-MLR_trainIndices,]
+
+# Created MLR model from Train dataset
+model_fit &lt;- lm(MonthlyIncome ~ JobLevel+TotalWorkingYears+YearsWithCurrManager, data=train.MonthlyIncome)
+summary(model_fit)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = MonthlyIncome ~ JobLevel + TotalWorkingYears + YearsWithCurrManager, 
+##     data = train.MonthlyIncome)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -5609.9  -852.5    29.0   705.9  3952.4 
+## 
+## Coefficients:
+##                      Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)          -1744.97     119.56 -14.595  &lt; 2e-16 ***
+## JobLevel              3734.81      80.39  46.460  &lt; 2e-16 ***
+## TotalWorkingYears       66.58      12.37   5.383 1.05e-07 ***
+## YearsWithCurrManager   -59.84      17.31  -3.456 0.000586 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 1350 on 605 degrees of freedom
+## Multiple R-squared:  0.917,  Adjusted R-squared:  0.9166 
+## F-statistic:  2227 on 3 and 605 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code># Validated model using Test dataset
+model_preds = predict(model_fit, newdata = test.MonthlyIncome)
+
+test.RMSE = data.frame(Observed = test.MonthlyIncome$MonthlyIncome,
+                       Predicted = model_preds)
+test.RMSE$Residual = test.RMSE$Observed - test.RMSE$Predicted
+test.RMSE$SquaredResidual = test.RMSE$Residual^2
+
+mean(sqrt(test.RMSE$SquaredResidual)) #1,091.855</code></pre>
+<pre><code>## [1] 1091.855</code></pre>
+<pre class="r"><code># Find RMSE for Test data
+model_preds_train = predict(model_fit, newdata = train.MonthlyIncome)
+
+train.RMSE = data.frame(Observed = train.MonthlyIncome$MonthlyIncome,
+                       Predicted = model_preds_train)
+train.RMSE$Residual = train.RMSE$Observed - train.RMSE$Predicted
+train.RMSE$SquaredResidual = train.RMSE$Residual^2
+
+mean(sqrt(train.RMSE$SquaredResidual)) #1,015.037</code></pre>
+<pre><code>## [1] 1015.037</code></pre>
+<p>Write salary predicted values for ‘CaseStudy2CompSet No Salary.xlsx’ to csv File</p>
+<pre class="r"><code># Read in &#39;No Attrition&#39; file
+No.SalaryOrig &lt;- read_excel(&quot;CaseStudy2CompSet No Salary.xlsx&quot;)
+
+# Only include variables that used in the model
+No.Salary &lt;- subset(No.SalaryOrig, select = c(ID, JobLevel, TotalWorkingYears, YearsWithCurrManager))
+
+model_preds_csv = predict(model_fit, newdata = No.Salary)
+
+# Cleanup the df to match example file before writing
+MonthlyIncome.Prediction &lt;- as.data.frame(model_preds_csv)
+MonthlyIncome.Prediction$ID &lt;- No.Salary$ID
+No.Salary_pred &lt;- merge(x = No.SalaryOrig, y = MonthlyIncome.Prediction,
+                          by.x = &quot;ID&quot;, by.y = &quot;ID&quot;, all = TRUE)
+names(No.Salary_pred)[names(No.Salary_pred)==&quot;model_preds_csv&quot;] &lt;- &quot;MonthlyIncome&quot;
+No.Salary_pred &lt;- No.Salary_pred %&gt;% relocate(&quot;MonthlyIncome&quot;, .after = &quot;ID&quot;)
+
+# Write to file
+write.csv(No.Salary_pred, &quot;Case2PredictionsRudick Salary.csv&quot;, row.names = FALSE, quote=FALSE)</code></pre>
+<p>Used SetepWise Selection to help confirm variable prediction</p>
+<pre class="r"><code>selectedVariables &lt;- subset(DataOrig, select = c(Attrition, MonthlyIncome, BusinessTravel, Department, EducationField,
+                                    Gender, JobRole, MaritalStatus,
+                                    OverTime, Age, JobLevel, TotalWorkingYears, YearsAtCompany, YearsInCurrentRole, YearsSinceLastPromotion, YearsWithCurrManager
+                                    ))
+df &lt;- subset(DataOrig, select = -c(Attrition,
+                                    Over18,
+                                    ID, EmployeeCount,
+                                    EmployeeNumber, StandardHours
+                                    ))
+  
+# Fit the full model 
+full.model &lt;- lm(MonthlyIncome ~., data = df)
+# Stepwise regression model
+step.model &lt;- stepAIC(full.model, direction = &quot;both&quot;, 
+                      trace = FALSE)
+summary(step.model)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = MonthlyIncome ~ BusinessTravel + DailyRate + DistanceFromHome + 
+##     Gender + JobLevel + JobRole + MonthlyRate + PercentSalaryHike + 
+##     PerformanceRating + TotalWorkingYears + YearsSinceLastPromotion + 
+##     YearsWithCurrManager, data = df)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -3780.1  -664.2    -7.6   627.2  4128.1 
+## 
+## Coefficients:
+##                                   Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)                      2.470e+02  4.421e+02   0.559 0.576601    
+## BusinessTravelTravel_Frequently  2.233e+02  1.384e+02   1.614 0.106974    
+## BusinessTravelTravel_Rarely      3.907e+02  1.170e+02   3.340 0.000874 ***
+## DailyRate                        1.499e-01  8.951e-02   1.675 0.094322 .  
+## DistanceFromHome                -6.686e+00  4.404e+00  -1.518 0.129337    
+## GenderMale                       1.137e+02  7.314e+01   1.554 0.120460    
+## JobLevel                         2.790e+03  8.108e+01  34.407  &lt; 2e-16 ***
+## JobRoleHuman Resources          -3.635e+02  2.487e+02  -1.461 0.144267    
+## JobRoleLaboratory Technician    -5.967e+02  1.673e+02  -3.567 0.000382 ***
+## JobRoleManager                   4.026e+03  2.288e+02  17.595  &lt; 2e-16 ***
+## JobRoleManufacturing Director    1.677e+02  1.656e+02   1.013 0.311529    
+## JobRoleResearch Director         4.033e+03  2.141e+02  18.838  &lt; 2e-16 ***
+## JobRoleResearch Scientist       -3.538e+02  1.673e+02  -2.115 0.034743 *  
+## JobRoleSales Executive          -4.459e+01  1.426e+02  -0.313 0.754512    
+## JobRoleSales Representative     -4.560e+02  2.104e+02  -2.167 0.030493 *  
+## MonthlyRate                     -9.219e-03  5.039e-03  -1.829 0.067703 .  
+## PercentSalaryHike                2.376e+01  1.554e+01   1.529 0.126543    
+## PerformanceRating               -3.066e+02  1.590e+02  -1.928 0.054157 .  
+## TotalWorkingYears                4.819e+01  8.455e+00   5.700 1.66e-08 ***
+## YearsSinceLastPromotion          2.992e+01  1.370e+01   2.184 0.029213 *  
+## YearsWithCurrManager            -2.790e+01  1.236e+01  -2.257 0.024268 *  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 1047 on 849 degrees of freedom
+## Multiple R-squared:  0.9493, Adjusted R-squared:  0.9481 
+## F-statistic:   795 on 20 and 849 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code># Set seed for reproducibility
+set.seed(123)
+# Set up repeated k-fold cross-validation
+train.control &lt;- trainControl(method = &quot;cv&quot;, number = 10)
+# Train the model
+step.model &lt;- train(MonthlyIncome ~., data = df,
+                    method = &quot;leapSeq&quot;, 
+                    tuneGrid = data.frame(nvmax = 1:5),
+                    trControl = train.control
+                    )
+step.model$results</code></pre>
+<pre><code>##   nvmax     RMSE  Rsquared       MAE   RMSESD RsquaredSD     MAESD
+## 1     1 1409.687 0.9029208 1077.7350 152.4679 0.04143429 118.81206
+## 2     2 1305.731 0.9168610  985.0028 128.5891 0.03744741  96.83887
+## 3     3 1083.454 0.9392468  831.5794 160.0151 0.03874862  95.24084
+## 4     4 1063.243 0.9408411  806.9536 173.2003 0.03886979  95.55216
+## 5     5 1066.495 0.9406728  810.1159 169.8189 0.03848898  97.75778</code></pre>
+<pre class="r"><code>step.model$bestTune</code></pre>
+<pre><code>##   nvmax
+## 4     4</code></pre>
+<pre class="r"><code>summary(step.model$finalModel)</code></pre>
+<pre><code>## Subset selection object
+## 50 Variables  (and intercept)
+##                                  Forced in Forced out
+## Age                                  FALSE      FALSE
+## BusinessTravelTravel_Frequently      FALSE      FALSE
+## BusinessTravelTravel_Rarely          FALSE      FALSE
+## DailyRate                            FALSE      FALSE
+## DepartmentResearch &amp; Development     FALSE      FALSE
+## DepartmentSales                      FALSE      FALSE
+## DistanceFromHome                     FALSE      FALSE
+## Education                            FALSE      FALSE
+## EducationFieldLife Sciences          FALSE      FALSE
+## EducationFieldMarketing              FALSE      FALSE
+## EducationFieldMedical                FALSE      FALSE
+## EducationFieldOther                  FALSE      FALSE
+## EducationFieldTechnical Degree       FALSE      FALSE
+## EnvironmentSatisfaction              FALSE      FALSE
+## GenderMale                           FALSE      FALSE
+## HourlyRate                           FALSE      FALSE
+## JobInvolvement                       FALSE      FALSE
+## JobLevel                             FALSE      FALSE
+## JobRoleHuman Resources               FALSE      FALSE
+## JobRoleLaboratory Technician         FALSE      FALSE
+## JobRoleManager                       FALSE      FALSE
+## JobRoleManufacturing Director        FALSE      FALSE
+## JobRoleResearch Director             FALSE      FALSE
+## JobRoleResearch Scientist            FALSE      FALSE
+## JobRoleSales Executive               FALSE      FALSE
+## JobRoleSales Representative          FALSE      FALSE
+## JobSatisfaction                      FALSE      FALSE
+## MaritalStatusMarried                 FALSE      FALSE
+## MaritalStatusSingle                  FALSE      FALSE
+## MonthlyRate                          FALSE      FALSE
+## NumCompaniesWorked                   FALSE      FALSE
+## OverTimeYes                          FALSE      FALSE
+## PercentSalaryHike                    FALSE      FALSE
+## PerformanceRating                    FALSE      FALSE
+## RelationshipSatisfaction             FALSE      FALSE
+## StockOptionLevel                     FALSE      FALSE
+## TotalWorkingYears                    FALSE      FALSE
+## TrainingTimesLastYear                FALSE      FALSE
+## WorkLifeBalance                      FALSE      FALSE
+## YearsAtCompany                       FALSE      FALSE
+## YearsInCurrentRole                   FALSE      FALSE
+## YearsSinceLastPromotion              FALSE      FALSE
+## YearsWithCurrManager                 FALSE      FALSE
+## BusinessTravel.Num                   FALSE      FALSE
+## Department.Num                       FALSE      FALSE
+## EducationField.Num                   FALSE      FALSE
+## Gender.Num                           FALSE      FALSE
+## JobRole.Num                          FALSE      FALSE
+## MaritalStatus.Num                    FALSE      FALSE
+## OverTime.Num                         FALSE      FALSE
+## 1 subsets of each size up to 4
+## Selection Algorithm: &#39;sequential replacement&#39;
+##          Age BusinessTravelTravel_Frequently BusinessTravelTravel_Rarely
+## 1  ( 1 ) &quot; &quot; &quot; &quot;                             &quot; &quot;                        
+## 2  ( 1 ) &quot; &quot; &quot; &quot;                             &quot; &quot;                        
+## 3  ( 1 ) &quot; &quot; &quot; &quot;                             &quot; &quot;                        
+## 4  ( 1 ) &quot; &quot; &quot; &quot;                             &quot; &quot;                        
+##          DailyRate DepartmentResearch &amp; Development DepartmentSales
+## 1  ( 1 ) &quot; &quot;       &quot; &quot;                              &quot; &quot;            
+## 2  ( 1 ) &quot; &quot;       &quot; &quot;                              &quot; &quot;            
+## 3  ( 1 ) &quot; &quot;       &quot; &quot;                              &quot; &quot;            
+## 4  ( 1 ) &quot; &quot;       &quot; &quot;                              &quot; &quot;            
+##          DistanceFromHome Education EducationFieldLife Sciences
+## 1  ( 1 ) &quot; &quot;              &quot; &quot;       &quot; &quot;                        
+## 2  ( 1 ) &quot; &quot;              &quot; &quot;       &quot; &quot;                        
+## 3  ( 1 ) &quot; &quot;              &quot; &quot;       &quot; &quot;                        
+## 4  ( 1 ) &quot; &quot;              &quot; &quot;       &quot; &quot;                        
+##          EducationFieldMarketing EducationFieldMedical EducationFieldOther
+## 1  ( 1 ) &quot; &quot;                     &quot; &quot;                   &quot; &quot;                
+## 2  ( 1 ) &quot; &quot;                     &quot; &quot;                   &quot; &quot;                
+## 3  ( 1 ) &quot; &quot;                     &quot; &quot;                   &quot; &quot;                
+## 4  ( 1 ) &quot; &quot;                     &quot; &quot;                   &quot; &quot;                
+##          EducationFieldTechnical Degree EnvironmentSatisfaction GenderMale
+## 1  ( 1 ) &quot; &quot;                            &quot; &quot;                     &quot; &quot;       
+## 2  ( 1 ) &quot; &quot;                            &quot; &quot;                     &quot; &quot;       
+## 3  ( 1 ) &quot; &quot;                            &quot; &quot;                     &quot; &quot;       
+## 4  ( 1 ) &quot; &quot;                            &quot; &quot;                     &quot; &quot;       
+##          HourlyRate JobInvolvement JobLevel JobRoleHuman Resources
+## 1  ( 1 ) &quot; &quot;        &quot; &quot;            &quot;*&quot;      &quot; &quot;                   
+## 2  ( 1 ) &quot; &quot;        &quot; &quot;            &quot;*&quot;      &quot; &quot;                   
+## 3  ( 1 ) &quot; &quot;        &quot; &quot;            &quot;*&quot;      &quot; &quot;                   
+## 4  ( 1 ) &quot; &quot;        &quot; &quot;            &quot;*&quot;      &quot; &quot;                   
+##          JobRoleLaboratory Technician JobRoleManager
+## 1  ( 1 ) &quot; &quot;                          &quot; &quot;           
+## 2  ( 1 ) &quot; &quot;                          &quot; &quot;           
+## 3  ( 1 ) &quot; &quot;                          &quot;*&quot;           
+## 4  ( 1 ) &quot; &quot;                          &quot;*&quot;           
+##          JobRoleManufacturing Director JobRoleResearch Director
+## 1  ( 1 ) &quot; &quot;                           &quot; &quot;                     
+## 2  ( 1 ) &quot; &quot;                           &quot;*&quot;                     
+## 3  ( 1 ) &quot; &quot;                           &quot;*&quot;                     
+## 4  ( 1 ) &quot; &quot;                           &quot;*&quot;                     
+##          JobRoleResearch Scientist JobRoleSales Executive
+## 1  ( 1 ) &quot; &quot;                       &quot; &quot;                   
+## 2  ( 1 ) &quot; &quot;                       &quot; &quot;                   
+## 3  ( 1 ) &quot; &quot;                       &quot; &quot;                   
+## 4  ( 1 ) &quot; &quot;                       &quot; &quot;                   
+##          JobRoleSales Representative JobSatisfaction MaritalStatusMarried
+## 1  ( 1 ) &quot; &quot;                         &quot; &quot;             &quot; &quot;                 
+## 2  ( 1 ) &quot; &quot;                         &quot; &quot;             &quot; &quot;                 
+## 3  ( 1 ) &quot; &quot;                         &quot; &quot;             &quot; &quot;                 
+## 4  ( 1 ) &quot; &quot;                         &quot; &quot;             &quot; &quot;                 
+##          MaritalStatusSingle MonthlyRate NumCompaniesWorked OverTimeYes
+## 1  ( 1 ) &quot; &quot;                 &quot; &quot;         &quot; &quot;                &quot; &quot;        
+## 2  ( 1 ) &quot; &quot;                 &quot; &quot;         &quot; &quot;                &quot; &quot;        
+## 3  ( 1 ) &quot; &quot;                 &quot; &quot;         &quot; &quot;                &quot; &quot;        
+## 4  ( 1 ) &quot; &quot;                 &quot; &quot;         &quot; &quot;                &quot; &quot;        
+##          PercentSalaryHike PerformanceRating RelationshipSatisfaction
+## 1  ( 1 ) &quot; &quot;               &quot; &quot;               &quot; &quot;                     
+## 2  ( 1 ) &quot; &quot;               &quot; &quot;               &quot; &quot;                     
+## 3  ( 1 ) &quot; &quot;               &quot; &quot;               &quot; &quot;                     
+## 4  ( 1 ) &quot; &quot;               &quot; &quot;               &quot; &quot;                     
+##          StockOptionLevel TotalWorkingYears TrainingTimesLastYear
+## 1  ( 1 ) &quot; &quot;              &quot; &quot;               &quot; &quot;                  
+## 2  ( 1 ) &quot; &quot;              &quot; &quot;               &quot; &quot;                  
+## 3  ( 1 ) &quot; &quot;              &quot; &quot;               &quot; &quot;                  
+## 4  ( 1 ) &quot; &quot;              &quot;*&quot;               &quot; &quot;                  
+##          WorkLifeBalance YearsAtCompany YearsInCurrentRole
+## 1  ( 1 ) &quot; &quot;             &quot; &quot;            &quot; &quot;               
+## 2  ( 1 ) &quot; &quot;             &quot; &quot;            &quot; &quot;               
+## 3  ( 1 ) &quot; &quot;             &quot; &quot;            &quot; &quot;               
+## 4  ( 1 ) &quot; &quot;             &quot; &quot;            &quot; &quot;               
+##          YearsSinceLastPromotion YearsWithCurrManager BusinessTravel.Num
+## 1  ( 1 ) &quot; &quot;                     &quot; &quot;                  &quot; &quot;               
+## 2  ( 1 ) &quot; &quot;                     &quot; &quot;                  &quot; &quot;               
+## 3  ( 1 ) &quot; &quot;                     &quot; &quot;                  &quot; &quot;               
+## 4  ( 1 ) &quot; &quot;                     &quot; &quot;                  &quot; &quot;               
+##          Department.Num EducationField.Num Gender.Num JobRole.Num
+## 1  ( 1 ) &quot; &quot;            &quot; &quot;                &quot; &quot;        &quot; &quot;        
+## 2  ( 1 ) &quot; &quot;            &quot; &quot;                &quot; &quot;        &quot; &quot;        
+## 3  ( 1 ) &quot; &quot;            &quot; &quot;                &quot; &quot;        &quot; &quot;        
+## 4  ( 1 ) &quot; &quot;            &quot; &quot;                &quot; &quot;        &quot; &quot;        
+##          MaritalStatus.Num OverTime.Num
+## 1  ( 1 ) &quot; &quot;               &quot; &quot;         
+## 2  ( 1 ) &quot; &quot;               &quot; &quot;         
+## 3  ( 1 ) &quot; &quot;               &quot; &quot;         
+## 4  ( 1 ) &quot; &quot;               &quot; &quot;</code></pre>
+<pre class="r"><code># Stepwise Selection includes JobLevel, TotalWorkingYears, and JobRole but only 2 JobRole out of 8 have statistically significant when include in the MLR
+coef(step.model$finalModel, 4)</code></pre>
+<pre><code>##              (Intercept)                 JobLevel           JobRoleManager 
+##               -659.34457               3007.23105               3772.23627 
+## JobRoleResearch Director        TotalWorkingYears 
+##               3839.24865                 42.65247</code></pre>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

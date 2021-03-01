@@ -292,6 +292,9 @@ $(document).ready(function () {
 <li>
   <a href="https://purifect.shinyapps.io/BeerData/">Case Study 1 Shiny</a>
 </li>
+<li>
+  <a href="CaseStudy1_Group3_Combined.html">Case Study 2</a>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         
@@ -310,6 +313,7 @@ $(document).ready(function () {
 </div>
 
 
+<p><a href="https://purifect.shinyapps.io/BeerData/">R Shiny App</a></p>
 <p>The study of beers and breweries in the United States was conducted using over 2000 beers from more than 500 breweries.</p>
 <p>Some of the focuses of this exploratory data analysis were placed on International Bitterness Units (IBU), Alcohol by volume (ABV), and regional differences with respect to states.</p>
 <p>This analysis is useful for Budweiser future business decision.</p>
@@ -375,35 +379,49 @@ names(mergedBeerData)[names(mergedBeerData)==&quot;Name.x&quot;] &lt;- &quot;Bee
 names(mergedBeerData)[names(mergedBeerData)==&quot;Name.y&quot;] &lt;- &quot;Brewery_name&quot;
 
 head(mergedBeerData)</code></pre>
-<pre><code>##   Brewery_id     Beer_name Beer_ID   ABV IBU                               Style
-## 1          1  Get Together    2692 0.045  50                        American IPA
-## 2          1 Maggie&#39;s Leap    2691 0.049  26                  Milk / Sweet Stout
-## 3          1    Wall&#39;s End    2690 0.048  19                   English Brown Ale
-## 4          1       Pumpion    2689 0.060  38                         Pumpkin Ale
-## 5          1    Stronghold    2688 0.060  25                     American Porter
-## 6          1   Parapet ESB    2687 0.056  47 Extra Special / Strong Bitter (ESB)
-##   Ounces       Brewery_name        City State
-## 1     16 NorthGate Brewing  Minneapolis    MN
-## 2     16 NorthGate Brewing  Minneapolis    MN
-## 3     16 NorthGate Brewing  Minneapolis    MN
-## 4     16 NorthGate Brewing  Minneapolis    MN
-## 5     16 NorthGate Brewing  Minneapolis    MN
-## 6     16 NorthGate Brewing  Minneapolis    MN</code></pre>
+<pre><code>##   Brewery_id     Beer_name Beer_ID   ABV IBU
+## 1          1  Get Together    2692 0.045  50
+## 2          1 Maggie&#39;s Leap    2691 0.049  26
+## 3          1    Wall&#39;s End    2690 0.048  19
+## 4          1       Pumpion    2689 0.060  38
+## 5          1    Stronghold    2688 0.060  25
+## 6          1   Parapet ESB    2687 0.056  47
+##                                 Style Ounces       Brewery_name        City
+## 1                        American IPA     16 NorthGate Brewing  Minneapolis
+## 2                  Milk / Sweet Stout     16 NorthGate Brewing  Minneapolis
+## 3                   English Brown Ale     16 NorthGate Brewing  Minneapolis
+## 4                         Pumpkin Ale     16 NorthGate Brewing  Minneapolis
+## 5                     American Porter     16 NorthGate Brewing  Minneapolis
+## 6 Extra Special / Strong Bitter (ESB)     16 NorthGate Brewing  Minneapolis
+##   State
+## 1    MN
+## 2    MN
+## 3    MN
+## 4    MN
+## 5    MN
+## 6    MN</code></pre>
 <pre class="r"><code>tail(mergedBeerData)</code></pre>
-<pre><code>##      Brewery_id                 Beer_name Beer_ID   ABV IBU                   Style
-## 2405        556             Pilsner Ukiah      98 0.055  NA         German Pilsener
-## 2406        557  Heinnieweisse Weissebier      52 0.049  NA              Hefeweizen
-## 2407        557           Snapperhead IPA      51 0.068  NA            American IPA
-## 2408        557         Moo Thunder Stout      50 0.049  NA      Milk / Sweet Stout
-## 2409        557         Porkslap Pale Ale      49 0.043  NA American Pale Ale (APA)
-## 2410        558 Urban Wilderness Pale Ale      30 0.049  NA        English Pale Ale
-##      Ounces                  Brewery_name          City State
-## 2405     12         Ukiah Brewing Company         Ukiah    CA
-## 2406     12       Butternuts Beer and Ale Garrattsville    NY
-## 2407     12       Butternuts Beer and Ale Garrattsville    NY
-## 2408     12       Butternuts Beer and Ale Garrattsville    NY
-## 2409     12       Butternuts Beer and Ale Garrattsville    NY
-## 2410     12 Sleeping Lady Brewing Company     Anchorage    AK</code></pre>
+<pre><code>##      Brewery_id                 Beer_name Beer_ID   ABV IBU
+## 2405        556             Pilsner Ukiah      98 0.055  NA
+## 2406        557  Heinnieweisse Weissebier      52 0.049  NA
+## 2407        557           Snapperhead IPA      51 0.068  NA
+## 2408        557         Moo Thunder Stout      50 0.049  NA
+## 2409        557         Porkslap Pale Ale      49 0.043  NA
+## 2410        558 Urban Wilderness Pale Ale      30 0.049  NA
+##                        Style Ounces                  Brewery_name          City
+## 2405         German Pilsener     12         Ukiah Brewing Company         Ukiah
+## 2406              Hefeweizen     12       Butternuts Beer and Ale Garrattsville
+## 2407            American IPA     12       Butternuts Beer and Ale Garrattsville
+## 2408      Milk / Sweet Stout     12       Butternuts Beer and Ale Garrattsville
+## 2409 American Pale Ale (APA)     12       Butternuts Beer and Ale Garrattsville
+## 2410        English Pale Ale     12 Sleeping Lady Brewing Company     Anchorage
+##      State
+## 2405    CA
+## 2406    NY
+## 2407    NY
+## 2408    NY
+## 2409    NY
+## 2410    AK</code></pre>
 </div>
 <div id="address-the-missing-values-in-each-column." class="section level3">
 <h3>3. Address the missing values in each column.</h3>
@@ -566,10 +584,10 @@ with(median.ABV.IBU_filtered,
 <pre class="r"><code># arrange by ABV in descending order, print state for first observation
 mergedBeerData$ABV.rank &lt;- dense_rank(-mergedBeerData$ABV)
 filter(mergedBeerData,ABV.rank == 1)</code></pre>
-<pre><code>##   Brewery_id                                            Beer_name Beer_ID   ABV IBU
-## 1         52 Lee Hill Series Vol. 5 - Belgian Style Quadrupel Ale    2565 0.128  NA
-##              Style Ounces            Brewery_name    City State ABV.rank
-## 1 Quadrupel (Quad)   19.2 Upslope Brewing Company Boulder    CO        1</code></pre>
+<pre><code>##   Brewery_id                                            Beer_name Beer_ID   ABV
+## 1         52 Lee Hill Series Vol. 5 - Belgian Style Quadrupel Ale    2565 0.128
+##   IBU            Style Ounces            Brewery_name    City State ABV.rank
+## 1  NA Quadrupel (Quad)   19.2 Upslope Brewing Company Boulder    CO        1</code></pre>
 <pre class="r"><code>mergedBeerData$IBU.rank &lt;- dense_rank(-mergedBeerData$IBU)
 filter(mergedBeerData,IBU.rank == 1)</code></pre>
 <pre><code>##   Brewery_id                 Beer_name Beer_ID   ABV IBU
